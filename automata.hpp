@@ -2,6 +2,8 @@
 #include <vector>
 #include <string>
 
+//TODO: Automato Builder
+
 class Automato {
 private:
   // Transições
@@ -16,4 +18,6 @@ private:
 public:
   bool isFinal(std::string s);
   bool isAcepted(std::string word);
+
+  //TODO: Constructor
 };
