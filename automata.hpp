@@ -6,11 +6,15 @@
 
 class Automato {
 private:
+  std::string name;
+  std::vector<char> alphabet;
   // Transições
   std::map<std::string, int> q_to_id;
   std::vector<std::map<char, int>> transitions;
   std::vector<int> finals;
   int initial_state;
+
+  int last_id;
 
   int getStateId(std::string s);
   int nextState(int current_s, char read);
@@ -19,5 +23,7 @@ public:
   bool isFinal(std::string s);
   bool isAcepted(std::string word);
 
+  void createState(std::string name);
+  void createTransition(std::string q1, std::string q2, char c);
   //TODO: Constructor
 };
