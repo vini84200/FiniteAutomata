@@ -20,6 +20,13 @@ private:
   int nextState(int current_s, char read);
   bool isFinalInt(int q);
 public:
+  ~Automato();
+  Automato(std::string name,
+           const std::vector<char>& alphabet,
+           std::vector<std::string> states,
+           std::vector<std::string> finals,
+           std::string initial_state);
+
   bool isFinal(std::string s);
   bool isAcepted(std::string word);
 
