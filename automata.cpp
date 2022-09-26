@@ -37,7 +37,7 @@ int Automato::nextState(int current_s, char read) {
   }
 }
 
-bool Automato::isAcepted(std::string word) {
+bool Automato::isAccepted(std::string word) {
   int q = this->initial_state;
 
   for (char c : word) {

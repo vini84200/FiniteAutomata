@@ -2,7 +2,8 @@
 #include <vector>
 #include <string>
 
-//TODO: Automato Builder
+#ifndef AUTOMATA_HPP
+#define AUTOMATA_HPP
 
 class Automato {
 private:
@@ -28,9 +29,10 @@ public:
            std::string initial_state);
 
   bool isFinal(std::string s);
-  bool isAcepted(std::string word);
+  bool isAccepted(std::string word);
 
   void createState(std::string name);
   void createTransition(std::string q1, std::string q2, char c);
-  //TODO: Constructor
 };
+
+#endif
