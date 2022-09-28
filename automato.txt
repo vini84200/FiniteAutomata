@@ -1,26 +1,18 @@
-maquininha
-S: q0,q1,q2,q3,q4,q5,q6,q7
-A: a,b,c,d,e,f,g,h,i,j,k,l,m,n,o
+exemplo_minimizacao
+S: q0,q1,q2,q3,q4,q5
+A: 0,1
 i: q0
-F: q0,q7
+F: q3,q5
 
-(q0,a,q1)
-(q1,j,q0)
-(q1,b,q2)
-(q1,c,q3)
-(q2,d,q0)
-(q2,e,q0)
-(q2,f,q0)
-(q2,g,q5)
-(q3,e,q0)
-(q3,f,q0)
-(q3,g,q4)
-(q4,h,q5)
-(q4,i,q6)
-(q5,j,q0)
-(q5,k,q6)
-(q6,m,q0)
-(q6,n,q0)
-(q6,j,q0)
-(q6,l,q5)
-(q6,o,q7)
+(q0,0,q1)
+(q0,1,q3)
+(q1,0,q0)
+(q1,1,q3)
+(q2,0,q1)
+(q2,1,q4)
+(q3,0,q5)
+(q3,1,q5)
+(q4,0,q3)
+(q4,1,q3)
+(q5,0,q5)
+(q5,1,q5)

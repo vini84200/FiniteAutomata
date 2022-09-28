@@ -117,6 +117,9 @@ Automato Parser::parseFile(std::string file_name) {
                     finals.push_back(final_state);
                     finals_str = finals_str.substr(posComma + 1);
                 }
+                // trim whitespaces
+                finals_str = finals_str.substr(finals_str.find_first_not_of(' '));
+                finals_str = finals_str.substr(0, finals_str.find_last_not_of(' ') + 1);
                 finals.push_back(finals_str);
                 stage++;
                 break;
@@ -162,7 +165,7 @@ Automato Parser::parseFile(std::string file_name) {
     for (auto symbol : alphabet) {
         printf("\t'%c' \n", symbol);
     }
-    printf("Initial state: '%s'\n ", initial_state.c_str());
+    printf("Initial state: '%s'\n", initial_state.c_str());
     printf("Final states: \n");
     for (auto final_state : finals) {
         printf("\t'%s' \n", final_state.c_str());

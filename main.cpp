@@ -10,4 +10,12 @@ int main() {
     printf("Accepts 'acgim'? %s \n", automato.isAccepted("acgim") ? "true" : "false");
     printf("Accepts 'abgklko'? %s \n", automato.isAccepted("abgklko") ? "true" : "false");
     printf("Accepts ''? %s \n", automato.isAccepted("") ? "true" : "false");
+    // simplifying automato
+    printf("Automato original\n");
+    automato.print();
+
+    printf("Automato simplificado\n");
+    automato.simplify();
+    automato.print();
+
 }
