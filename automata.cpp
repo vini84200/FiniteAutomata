@@ -147,10 +147,14 @@ void Automato::removeState(const std::string &state) {
     // remove from transitions
     for (int i = 0; i < this->transitions.size(); i++) {
         if (i != state_id) {
+            std::vector<char> to_remove;
             for (auto &transition: this->transitions[i]) {
                 if (transition.second == state_id) {
-                    this->transitions[i].erase(transition.first);
+                    to_remove.push_back(transition.first);
                 }
+            }
+            for (auto &c: to_remove) {
+                this->transitions[i].erase(c);
             }
         }
     }
