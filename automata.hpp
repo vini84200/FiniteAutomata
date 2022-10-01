@@ -12,7 +12,7 @@ private:
     // Transições
     std::map<std::string, int> q_to_id;
     std::map<int, std::string> id_to_q;
-    std::vector<std::map<char, int>> transitions;
+    std::map<int, std::map<char, int>> transitions;
     std::vector<int> finals;
     int initial_state;
 
@@ -56,8 +56,6 @@ public:
     void removeDeadStates();
 
     void mergeEquivalentStates();
-
-    bool isEquivalent(std::vector<int> &states_a, std::vector<int> &states_b);
 };
 
 #endif

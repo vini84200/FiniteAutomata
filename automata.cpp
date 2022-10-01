@@ -23,7 +23,7 @@ bool Automato::isFinalInt(int a) {
   return false;
 };
 
-int Automato::getStateId(std::string s) {
+int Automato::getStateId(const std::string s) {
   try {
     return this->q_to_id.at(s);
   } catch (std::out_of_range ex) {
@@ -58,7 +58,6 @@ void Automato::createState(std::string name) {
     int id = ++this->last_id;
     this->q_to_id[name] = id;
     this->id_to_q[id] = name;
-    this->transitions.emplace_back();
     this->transitions[id] = std::map<char, int>();
     for (char c : this->alphabet) {
         this->transitions[id][c] = -1;
@@ -134,13 +133,19 @@ void Automato::print() {
 void Automato::removeState(const std::string& state) {
     printf("removing state %s\n", state.c_str());
     int state_id = getStateId(state);
-    // Remove o estado do vetor de estados finais
+    if (state_id == -1) {
+        return;
+    }
+    // remove from id_to_q
+    id_to_q.erase(state_id);
+    // remove from q_to_id
+    q_to_id.erase(state);
+
+    // remove from finals
     this->finals.erase(std::remove(this->finals.begin(), this->finals.end(), this->getStateId(state)), this->finals.end());
-    // Remove o estado do vetor de transições
+    // remove from transitions
     for (int i = 0; i < this->transitions.size(); i++) {
-        if (i == state_id) {
-            this->transitions.erase(this->transitions.begin() + i);
-        } else {
+        if (i != state_id) {
             for (auto &transition: this->transitions[i]) {
                 if (transition.second == state_id) {
                     this->transitions[i].erase(transition.first);
@@ -148,27 +153,33 @@ void Automato::removeState(const std::string& state) {
             }
         }
     }
+    this->transitions.erase(state_id);
 }
 
-void Automato::merge_states(std::string state1, const std::string& state2) {
+void Automato::merge_states(const std::string state1, const std::string& state2) {
     printf("merging states %s and %s\n", state1.c_str(), state2.c_str());
-    int state1_id = getStateId(std::move(state1));
+    int state1_id = getStateId(state1);
     int state2_id = getStateId(state2);
     // Remove o estado do vetor de estados
-//    this->q_to_id.erase(state2);
+    this->q_to_id.erase(state2);
+    this->id_to_q.erase(state2_id);
     // Remove o estado do vetor de estados finais
-    this->finals.erase(std::remove(this->finals.begin(), this->finals.end(), this->getStateId(state2)), this->finals.end());
-    // Remove o estado do vetor de transições
+    this->finals.erase(std::remove(this->finals.begin(), this->finals.end(), state2_id), this->finals.end());
+    // Muda transições para o estado 2 para o estado 1
     for (int i = 0; i < this->transitions.size(); i++) {
-        if (i == state2_id) {
-            this->transitions.erase(this->transitions.begin() + i);
-        } else {
+        if (i != state2_id) {
             for (auto &transition: this->transitions[i]) {
                 if (transition.second == state2_id) {
-                    transition.second = state1_id;
+                    this->transitions[i][transition.first] = state1_id;
                 }
             }
         }
+    }
+    // Remove o estado do vetor de transições
+    this->transitions.erase(state2_id);
+    // Muda o estado inicial se for o estado 2
+    if (this->initial_state == state2_id) {
+        this->initial_state = state1_id;
     }
 }
 
@@ -244,8 +255,6 @@ void Automato::removeDeadStates() {
 }
 
 void Automato::mergeEquivalentStates() {
-    // FIXME: Não está funcionando corretamente
-
     // 1. Criar uma tabela de equivalência
 
     // Tabela de equivalência é uma matriz de booleanos,
@@ -258,6 +267,7 @@ void Automato::mergeEquivalentStates() {
         }
         equivalence_table.push_back(row);
     }
+
     // 2. Marcar estados finais e não finais como não equivalentes
     for (auto &final_state: this->finals) {
         for (auto &state: this->q_to_id) {
@@ -267,6 +277,7 @@ void Automato::mergeEquivalentStates() {
             }
         }
     }
+
     // 3. Marcar estados equivalentes
     bool has_changed = true;
     while (has_changed) {
@@ -300,14 +311,9 @@ void Automato::mergeEquivalentStates() {
     // 4. Remover estados equivalentes
     for (int x = 0; x < equivalence_table.size(); x++) {
         for (int y = 0; y < equivalence_table.size(); y++) {
-            if (!equivalence_table[x][y] && x != y) {
+            if (!equivalence_table[x][y] && x != y && x<y) {
                 this->merge_states(this->getStateName(x), this->getStateName(y));
             }
         }
     }
 }
-
-bool Automato::isEquivalent(std::vector<int> &states_a, std::vector<int> &states_b) {
-
-}
-
