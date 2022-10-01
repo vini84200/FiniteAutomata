@@ -1,31 +1,26 @@
-all: main clean-deps
+OBJS	= automata.o main.o parser.o
+SOURCE	= automata.cpp main.cpp parser.cpp
+HEADER	= automata.hpp parser.h
+OUT	= minimizar_automato
+CC	 = g++
+FLAGS	 = -g -c -Wall
+LFLAGS	 =
 
-CXX = g++
-override CXXFLAGS += -g -Wno-everything
+all: $(OBJS)
+	$(CC) -g $(OBJS) -o $(OUT) $(LFLAGS)
 
-SRCS = $(shell find . -name '.ccls-cache' -type d -prune -o -type f -name '*.cpp' -print | sed -e 's/ /\\ /g')
-OBJS = $(SRCS:.cpp=.o)
-DEPS = $(SRCS:.cpp=.d)
+automata.o: automata.cpp automata.hpp
+	$(CC) $(FLAGS) automata.cpp
 
-%.d: %.cpp
-	@set -e; rm -f "$@"; \
-	$(CXX) -MM $(CXXFLAGS) "$<" > "$@.$$$$"; \
-	sed 's,\([^:]*\)\.o[ :]*,\1.o \1.d : ,g' < "$@.$$$$" > "$@"; \
-	rm -f "$@.$$$$"
+main.o: main.cpp
+	$(CC) $(FLAGS) main.cpp
 
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c "$<" -o "$@"
+parser.o: parser.cpp parser.h
+	$(CC) $(FLAGS) parser.cpp
 
-include $(DEPS)
-
-main: $(OBJS)
-	$(CXX) $(CXXFLAGS) $(OBJS) -o "$@"
-
-main-debug: $(OBJS)
-	$(CXX) $(CXXFLAGS) -O0 $(OBJS) -o "$@"
 
 clean:
-	rm -f $(OBJS) $(DEPS) main
+	rm -f $(OBJS) $(OUT)
 
-clean-deps:
-	rm -f $(DEPS)
+run: $(OUT)
+	./$(OUT)
