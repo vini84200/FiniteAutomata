@@ -259,7 +259,7 @@ void Automato::mergeEquivalentStates() {
     // onde a[i][j] é false se os estados i e j são equivalentes
     std::vector<std::vector<bool>> equivalence_table;
     for (int i = 0; i < this->q_to_id.size(); i++) {
-        std::vector<bool> row = std::vector<bool>(this->q_to_id.size(), false);
+        std::vector<bool> row(this->q_to_id.size(), false);
         equivalence_table.push_back(row);
     }
 
