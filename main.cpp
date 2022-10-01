@@ -1,4 +1,5 @@
 #define DEBUG ded
+
 #include "automata.hpp"
 #include "parser.h"
 

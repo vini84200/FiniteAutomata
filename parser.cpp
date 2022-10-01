@@ -2,6 +2,7 @@
 // Created by vini84200 on 9/26/22.
 //
 #define DEBUG
+
 #include "parser.h"
 #include <string.h>
 #include <iostream>
@@ -129,7 +130,8 @@ Automato Parser::parseFile(std::string file_name) {
                 std::string transition_str = line;
                 int posOpenParenthesis = transition_str.find("(");
                 int posCloseParenthesis = transition_str.find(")");
-                transition_str = transition_str.substr(posOpenParenthesis + 1, posCloseParenthesis - posOpenParenthesis - 1);
+                transition_str = transition_str.substr(posOpenParenthesis + 1,
+                                                       posCloseParenthesis - posOpenParenthesis - 1);
                 // Get state 1
                 std::string state1 = transition_str.substr(0, transition_str.find(","));
                 // trim whitespaces
@@ -158,28 +160,29 @@ Automato Parser::parseFile(std::string file_name) {
     // Print automata
     printf("Name: %s \n", name.c_str());
     printf("States: \n");
-    for (auto state : states) {
+    for (auto state: states) {
         printf("\t'%s' \n", state.c_str());
     }
     printf("Alphabet: \n");
-    for (auto symbol : alphabet) {
+    for (auto symbol: alphabet) {
         printf("\t'%c' \n", symbol);
     }
     printf("Initial state: '%s'\n", initial_state.c_str());
     printf("Final states: \n");
-    for (auto final_state : finals) {
+    for (auto final_state: finals) {
         printf("\t'%s' \n", final_state.c_str());
     }
     printf("Transitions: \n");
-    for (auto transition : transitions) {
-        printf("\t'%s' --%c-> '%s' \n", std::get<0>(transition).c_str(), std::get<1>(transition), std::get<2>(transition).c_str());
+    for (auto transition: transitions) {
+        printf("\t'%s' --%c-> '%s' \n", std::get<0>(transition).c_str(), std::get<1>(transition),
+               std::get<2>(transition).c_str());
     }
     printf("\n");
 #else
     printf("Automata %s created \n", name.c_str());
 #endif
     Automato automata(name, alphabet, states, finals, initial_state);
-    for (auto transition : transitions) {
+    for (auto transition: transitions) {
         automata.createTransition(std::get<0>(transition), std::get<2>(transition), std::get<1>(transition));
     }
     // return automata

@@ -6,48 +6,48 @@
 Automato::~Automato() {}
 
 bool Automato::isFinal(std::string a) {
-  int id = this->getStateId(a);
-  int s;
-  for (int s : this->finals) {
-    if (s == id)
-      return true;
-  }
-  return false;
+    int id = this->getStateId(a);
+    int s;
+    for (int s: this->finals) {
+        if (s == id)
+            return true;
+    }
+    return false;
 };
 
 bool Automato::isFinalInt(int a) {
-  for (int s : this->finals) {
-    if (s == a)
-      return true;
-  }
-  return false;
+    for (int s: this->finals) {
+        if (s == a)
+            return true;
+    }
+    return false;
 };
 
 int Automato::getStateId(const std::string s) {
-  try {
-    return this->q_to_id.at(s);
-  } catch (std::out_of_range ex) {
-    return -1;
-  }
+    try {
+        return this->q_to_id.at(s);
+    } catch (std::out_of_range ex) {
+        return -1;
+    }
 }
 
 int Automato::nextState(int current_s, char read) {
-  try {
-    return this->transitions.at(current_s).at(read);
-  } catch (std::out_of_range ex) {
-    return -1;
-  }
+    try {
+        return this->transitions.at(current_s).at(read);
+    } catch (std::out_of_range ex) {
+        return -1;
+    }
 }
 
 bool Automato::isAccepted(std::string word) {
-  int q = this->initial_state;
+    int q = this->initial_state;
 
-  for (char c : word) {
-    if (q == -1) {
-      return isFinalInt(q);
+    for (char c: word) {
+        if (q == -1) {
+            return isFinalInt(q);
+        }
+        q = nextState(q, c);
     }
-    q = nextState(q, c);
-  }
     return isFinalInt(q);
 }
 
@@ -59,19 +59,19 @@ void Automato::createState(std::string name) {
     this->q_to_id[name] = id;
     this->id_to_q[id] = name;
     this->transitions[id] = std::map<char, int>();
-    for (char c : this->alphabet) {
+    for (char c: this->alphabet) {
         this->transitions[id][c] = -1;
     }
 }
 
 void Automato::createTransition(std::string q1, std::string q2, char c) {
-  int s1 = this->getStateId(q1);
-  int s2 = this->getStateId(q2);
-  if (s1 == -1 || s2 == -1) {
-    return;
-  }
-  
-  this->transitions[s1][c] = s2;
+    int s1 = this->getStateId(q1);
+    int s2 = this->getStateId(q2);
+    if (s1 == -1 || s2 == -1) {
+        return;
+    }
+
+    this->transitions[s1][c] = s2;
 }
 
 Automato::Automato(std::string name, const std::vector<char> &alphabet,
@@ -130,7 +130,7 @@ void Automato::print() {
 
 }
 
-void Automato::removeState(const std::string& state) {
+void Automato::removeState(const std::string &state) {
     printf("removing state %s\n", state.c_str());
     int state_id = getStateId(state);
     if (state_id == -1) {
@@ -142,7 +142,8 @@ void Automato::removeState(const std::string& state) {
     q_to_id.erase(state);
 
     // remove from finals
-    this->finals.erase(std::remove(this->finals.begin(), this->finals.end(), this->getStateId(state)), this->finals.end());
+    this->finals.erase(std::remove(this->finals.begin(), this->finals.end(), this->getStateId(state)),
+                       this->finals.end());
     // remove from transitions
     for (int i = 0; i < this->transitions.size(); i++) {
         if (i != state_id) {
@@ -156,7 +157,7 @@ void Automato::removeState(const std::string& state) {
     this->transitions.erase(state_id);
 }
 
-void Automato::merge_states(const std::string state1, const std::string& state2) {
+void Automato::merge_states(const std::string state1, const std::string &state2) {
     printf("merging states %s and %s\n", state1.c_str(), state2.c_str());
     int state1_id = getStateId(state1);
     int state2_id = getStateId(state2);
@@ -215,7 +216,9 @@ void Automato::removeUnreachableStates() {
         reachable_states = new_reachable_states;
         for (auto &state: reachable_states) {
             for (auto &transition: this->transitions[state]) {
-                if (transition.second != -1 && std::find(visited_states.begin(), visited_states.end(), transition.second) == visited_states.end()) {
+                if (transition.second != -1 &&
+                    std::find(visited_states.begin(), visited_states.end(), transition.second) ==
+                    visited_states.end()) {
                     new_reachable_states.push_back(transition.second);
                     visited_states.push_back(transition.second);
                 }
@@ -311,7 +314,7 @@ void Automato::mergeEquivalentStates() {
     // 4. Remover estados equivalentes
     for (int x = 0; x < equivalence_table.size(); x++) {
         for (int y = 0; y < equivalence_table.size(); y++) {
-            if (!equivalence_table[x][y] && x != y && x<y) {
+            if (!equivalence_table[x][y] && x != y && x < y) {
                 this->merge_states(this->getStateName(x), this->getStateName(y));
             }
         }

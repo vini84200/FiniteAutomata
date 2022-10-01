@@ -43,9 +43,11 @@ public:
 
     void print();
 
-    void removeState(const std::string& state);
+    void removeState(const std::string &state);
+
     void removeState(int state);
-    void merge_states(std::string state1, const std::string& state2);
+
+    void merge_states(std::string state1, const std::string &state2);
 
     void simplify();
 
