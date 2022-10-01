@@ -1,11 +1,9 @@
-//
-// Created by vini84200 on 9/26/22.
-//
 #define DEBUG
 
 #include "parser.h"
 #include <string.h>
 #include <iostream>
+#include "fstream"
 // Example of a file that can be parsed
 //MeuAFD
 //S: q0,q1,q2,q3
@@ -44,6 +42,11 @@ Automato Parser::parseFile(std::string file_name) {
         fgets(line, 100, file);
         // remove \n
         line[strlen(line) - 1] = '\0';
+        // remove \r
+        if (line[strlen(line) - 1] == '\r') {
+            line[strlen(line) - 1] = '\0';
+        }
+
         // check if line is empty
         if (strlen(line) == 0) {
             continue;

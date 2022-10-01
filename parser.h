@@ -1,6 +1,3 @@
-//
-// Created by vini84200 on 9/26/22.
-//
 #include <string>
 #include "automata.hpp"
 
