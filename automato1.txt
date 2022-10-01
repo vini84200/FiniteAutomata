@@ -1,0 +1,21 @@
+exemplo_minimizacao
+S: q0,q1,q2,q3,q4,q5,q6
+A: a,b,c,d
+i: q0
+F: q4
+
+(q0,a,q1)
+(q0,b,q0)
+(q0,c,q2)
+(q1,a,q0)
+(q1,b,q1)
+(q1,c,q3)
+(q2,c,q2)
+(q2,a,q4)
+(q3,c,q3)
+(q3,a,q4)
+(q5,a,q5)
+(q5,b,q5)
+(q5,c,q5)
+(q5,d,q5)
+(q6,d,q5)
