@@ -18,28 +18,26 @@ private:
 
     int last_id;
 
-    int getStateId(std::string s);
+    int getStateId(const std::string &s);
 
     int nextState(int current_s, char read);
 
     bool isFinalInt(int q);
 
 public:
-    ~Automato();
-
-    Automato(std::string name,
+    Automato(const std::string &name,
              const std::vector<char> &alphabet,
-             std::vector<std::string> states,
-             std::vector<std::string> finals,
-             std::string initial_state);
+             const std::vector<std::string> &states,
+             const std::vector<std::string> &finals,
+             const std::string &initial_state);
 
-    bool isFinal(std::string s);
+    bool isFinal(const std::string& a);
 
-    bool isAccepted(std::string word);
+    bool isAccepted(const std::string& word);
 
-    void createState(std::string name);
+    void createState(const std::string& state_name);
 
-    void createTransition(std::string q1, std::string q2, char c);
+    void createTransition(const std::string &q1, const std::string &q2, char c);
 
     void print();
 
@@ -47,7 +45,7 @@ public:
 
     void removeState(int state);
 
-    void merge_states(std::string state1, const std::string &state2);
+    void merge_states(const std::string &state1, const std::string &state2);
 
     void simplify();
 

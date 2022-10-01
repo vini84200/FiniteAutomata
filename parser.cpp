@@ -3,7 +3,6 @@
 #include "parser.h"
 #include <string.h>
 #include <iostream>
-#include "fstream"
 // Example of a file that can be parsed
 //MeuAFD
 //S: q0,q1,q2,q3

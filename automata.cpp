@@ -3,30 +3,20 @@
 #include <algorithm>
 #include <iostream>
 
-Automato::~Automato() {}
 
-bool Automato::isFinal(std::string a) {
+bool Automato::isFinal(const std::string& a) {
     int id = this->getStateId(a);
-    int s;
-    for (int s: this->finals) {
-        if (s == id)
-            return true;
-    }
-    return false;
-};
+    return std::any_of(this->finals.begin(), this->finals.end(), [id](int s) { return s == id; });
+}
 
 bool Automato::isFinalInt(int a) {
-    for (int s: this->finals) {
-        if (s == a)
-            return true;
-    }
-    return false;
-};
+    return std::any_of(this->finals.begin(), this->finals.end(), [a](int s) { return s == a; });
+}
 
-int Automato::getStateId(const std::string s) {
+int Automato::getStateId(const std::string &s) {
     try {
         return this->q_to_id.at(s);
-    } catch (std::out_of_range ex) {
+    } catch (std::out_of_range &ex) {
         return -1;
     }
 }
@@ -34,12 +24,12 @@ int Automato::getStateId(const std::string s) {
 int Automato::nextState(int current_s, char read) {
     try {
         return this->transitions.at(current_s).at(read);
-    } catch (std::out_of_range ex) {
+    } catch (std::out_of_range &ex) {
         return -1;
     }
 }
 
-bool Automato::isAccepted(std::string word) {
+bool Automato::isAccepted(const std::string& word) {
     int q = this->initial_state;
 
     for (char c: word) {
@@ -51,20 +41,20 @@ bool Automato::isAccepted(std::string word) {
     return isFinalInt(q);
 }
 
-void Automato::createState(std::string name) {
-    if (this->getStateId(name) != -1) {
+void Automato::createState(const std::string& state_name) {
+    if (this->getStateId(state_name) != -1) {
         return;
     }
     int id = ++this->last_id;
-    this->q_to_id[name] = id;
-    this->id_to_q[id] = name;
+    this->q_to_id[state_name] = id;
+    this->id_to_q[id] = state_name;
     this->transitions[id] = std::map<char, int>();
     for (char c: this->alphabet) {
         this->transitions[id][c] = -1;
     }
 }
 
-void Automato::createTransition(std::string q1, std::string q2, char c) {
+void Automato::createTransition(const std::string &q1, const std::string &q2, char c) {
     int s1 = this->getStateId(q1);
     int s2 = this->getStateId(q2);
     if (s1 == -1 || s2 == -1) {
@@ -74,9 +64,9 @@ void Automato::createTransition(std::string q1, std::string q2, char c) {
     this->transitions[s1][c] = s2;
 }
 
-Automato::Automato(std::string name, const std::vector<char> &alphabet,
-                   std::vector<std::string> states, std::vector<std::string> finals,
-                   std::string initial_state) {
+Automato::Automato(const std::string &name, const std::vector<char> &alphabet,
+                   const std::vector<std::string> &states, const std::vector<std::string> &finals,
+                   const std::string &initial_state) {
 
     this->name = name;
     for (char i: alphabet) {
@@ -161,7 +151,7 @@ void Automato::removeState(const std::string &state) {
     this->transitions.erase(state_id);
 }
 
-void Automato::merge_states(const std::string state1, const std::string &state2) {
+void Automato::merge_states(const std::string &state1, const std::string &state2) {
     printf("merging states %s and %s\n", state1.c_str(), state2.c_str());
     int state1_id = getStateId(state1);
     int state2_id = getStateId(state2);
@@ -268,10 +258,7 @@ void Automato::mergeEquivalentStates() {
     // onde a[i][j] é false se os estados i e j são equivalentes
     std::vector<std::vector<bool>> equivalence_table;
     for (int i = 0; i < this->q_to_id.size(); i++) {
-        std::vector<bool> row;
-        for (int j = 0; j < this->q_to_id.size(); j++) {
-            row.push_back(false);
-        }
+        std::vector<bool> row = std::vector<bool>(this->q_to_id.size(), false);
         equivalence_table.push_back(row);
     }
 

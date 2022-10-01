@@ -1,8 +1,5 @@
-#define DEBUG ded
-
 #include "automata.hpp"
 #include "parser.h"
-#include <iostream>
 #include <string.h>
 
 
@@ -25,7 +22,11 @@ int main() {
         printf("4 - Imprimir o autômato\n");
         printf("5 - Sair\n");
         int option;
-        scanf("%d", &option);
+        if (scanf("%d", &option) == 0) {
+            printf("Opção inválida\n");
+            break;
+        }
+
 
         switch (option) {
             case 1:
@@ -46,7 +47,7 @@ int main() {
 
             case 3: {
                 printf("Digite o nome do arquivo: ");
-                char file_name[256];
+                file_name[0] = '\0';
                 scanf("%s", file_name);
                 if (strlen(file_name) == 0) {
                     printf("Nome de arquivo inválido");
