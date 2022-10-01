@@ -189,6 +189,7 @@ Automato Parser::parseFile(std::string file_name) {
     for (auto transition: transitions) {
         automata.createTransition(std::get<0>(transition), std::get<2>(transition), std::get<1>(transition));
     }
+    fclose(file);
     // return automata
     return automata;
 }
