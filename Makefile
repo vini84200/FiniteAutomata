@@ -1,6 +1,6 @@
-OBJS	= automata.o main.o parser.o
-SOURCE	= automata.cpp main.cpp parser.cpp
-HEADER	= automata.hpp parser.h
+OBJS	= automato.o main.o parser.o
+SOURCE	= automato.cpp main.cpp parser.cpp
+HEADER	= automato.hpp parser.h
 OUT	= minimizar_automato
 CC	 = g++
 FLAGS	 = -g -c -Wall
@@ -9,8 +9,8 @@ LFLAGS	 =
 all: $(OBJS)
 	$(CC) -g $(OBJS) -o $(OUT) $(LFLAGS)
 
-automata.o: automata.cpp automata.hpp
-	$(CC) $(FLAGS) automata.cpp
+automato.o: automato.cpp automato.hpp
+	$(CC) $(FLAGS) automato.cpp
 
 main.o: main.cpp
 	$(CC) $(FLAGS) main.cpp

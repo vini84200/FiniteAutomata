@@ -1,19 +1,14 @@
 #include <string>
-#include "automata.hpp"
+#include "automato.hpp"
 
 #ifndef FINITEAUTOMATA_PARSER_H
 #define FINITEAUTOMATA_PARSER_H
 
-
-class Parser {
-    // Use builder pattern to create a parser
-    // that can parse a file and create a finite automata
+class Parser{
 public:
     Parser();
-
     ~Parser();
-
-    Automato parseFile(std::string file_name);
+    Automato parseArquivo(std::string nome_arquivo);
 };
 
 #endif //FINITEAUTOMATA_PARSER_H

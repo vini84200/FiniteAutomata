@@ -3,195 +3,179 @@
 #include "parser.h"
 #include <string.h>
 #include <iostream>
-// Example of a file that can be parsed
-//MeuAFD
-//S: q0,q1,q2,q3
-//A: a,b
-//i: q0
-//F: q2,q3
-//
-//(q0,a,q1)
-//(q0,b,q3)
-//(q1,a,q2)
-//(q1,b,q1)
-//(q2,a,q2)
-//(q3,b,q2)
 
+Parser::Parser(){
 
-Parser::Parser() {}
+}
 
-Parser::~Parser() {}
+Parser::~Parser(){
 
-Automato Parser::parseFile(std::string file_name) {
-    // open file
-    auto file = fopen(file_name.c_str(), "r");
-    if (file == nullptr) {
+}
+
+Automato Parser::parseArquivo(std::string nome_arquivo){
+    // Abre arquivo para leitura
+    auto arq = fopen(nome_arquivo.c_str(), "r");
+    if(arq == nullptr){
         std::cout << "Arquivo não encontrado" << std::endl;
         exit(1);
     }
-    // parse file content
-    std::string name, initial_state;
-    std::vector<std::string> states, finals;
-    std::vector<char> alphabet;
-    std::vector<std::tuple<std::string, char, std::string>> transitions;
-    int stage = 0;
-    while (!feof(file)) {
-        // read line
-        char line[100];
-        fgets(line, 100, file);
-        // remove \n
-        line[strlen(line) - 1] = '\0';
-        // remove \r
-        if (line[strlen(line) - 1] == '\r') {
-            line[strlen(line) - 1] = '\0';
+    // Processa o arquivo
+    std::string nome, estado_inicial;
+    std::vector<std::string> estados, finais;
+    std::vector<char> alfabeto;
+    std::vector<std::tuple<std::string, char, std::string>> transicoes;
+    int etapa = 0;
+    while(!feof(arq)){
+        // read linha
+        char linha[100];
+        fgets(linha, 100, arq);
+        // Remove CRLF
+        linha[strlen(linha) - 1] = '\0';
+        if(linha[strlen(linha) - 1] == '\r'){
+            linha[strlen(linha) - 1] = '\0';
         }
-
-        // check if line is empty
-        if (strlen(line) == 0) {
+        // Verifica se a linha está vazia
+        if(strlen(linha) == 0){
             continue;
         }
-        // parse line
-        switch (stage) {
-            case 0: {
-                // read name
-                name = line;
-
-                stage++;
+        // Parse linha
+        switch(etapa){
+            // Lê nome
+            case 0:{
+                nome = linha;
+                etapa++;
                 break;
             }
-            case 1: {
-                // read states
-                std::string states_str = line;
-                int posCollon = states_str.find(":");
-                states_str = states_str.substr(posCollon + 1);
-                while (states_str.find(",") != std::string::npos) {
-                    int posComma = states_str.find(",");
-                    std::string state = states_str.substr(0, posComma);
-                    // trim whitespaces
-                    while (state[0] == ' ') {
-                        state = state.substr(1);
+            // Lê estados
+            case 1:{
+                std::string string_estados = linha;
+                int posDoisPontos = string_estados.find(":");
+                string_estados = string_estados.substr(posDoisPontos + 1);
+                while(string_estados.find(",") != std::string::npos){
+                    int posVirgula = string_estados.find(",");
+                    std::string estado = string_estados.substr(0, posVirgula);
+                    // Corta espaços vazios
+                    while(estado[0] == ' '){
+                        estado = estado.substr(1);
                     }
-                    while (state[state.length() - 1] == ' ') {
-                        state = state.substr(0, state.length() - 1);
+                    while(estado[estado.length() - 1] == ' '){
+                        estado = estado.substr(0, estado.length() - 1);
                     }
-                    states.push_back(state);
-                    states_str = states_str.substr(posComma + 1);
+                    estados.push_back(estado);
+                    string_estados = string_estados.substr(posVirgula + 1);
                 }
-                states.push_back(states_str);
-                stage++;
+                estados.push_back(string_estados);
+                etapa++;
                 break;
             }
-            case 2: {
-                // read alphabet
-                std::string alphabet_str = line;
-                int posCollon = alphabet_str.find(":");
-                alphabet_str = alphabet_str.substr(posCollon + 1);
-                while (alphabet_str.find(",") != std::string::npos) {
-                    int posComma = alphabet_str.find(",");
-                    std::string symbol = alphabet_str.substr(0, posComma);
-                    symbol = symbol.substr(symbol.find_first_not_of(' '));
-                    symbol = symbol.substr(0, symbol.find_last_not_of(' ') + 1);
-                    alphabet.push_back(symbol[0]);
-                    alphabet_str = alphabet_str.substr(posComma + 1);
+            // Lê alfabeto
+            case 2:{
+                std::string string_alfabeto = linha;
+                int posDoisPontos = string_alfabeto.find(":");
+                string_alfabeto = string_alfabeto.substr(posDoisPontos + 1);
+                while (string_alfabeto.find(",") != std::string::npos) {
+                    int posVirgula = string_alfabeto.find(",");
+                    std::string simbolo = string_alfabeto.substr(0, posVirgula);
+                    simbolo = simbolo.substr(simbolo.find_first_not_of(' '));
+                    simbolo = simbolo.substr(0, simbolo.find_last_not_of(' ') + 1);
+                    alfabeto.push_back(simbolo[0]);
+                    string_alfabeto = string_alfabeto.substr(posVirgula + 1);
                 }
-                alphabet.push_back(alphabet_str[0]);
-                stage++;
+                alfabeto.push_back(string_alfabeto[0]);
+                etapa++;
                 break;
             }
-            case 3: {
-                // read initial state
-                std::string initial_state_str = line;
-                int posColon = initial_state_str.find(":");
-                initial_state_str = initial_state_str.substr(posColon + 1);
-                // trim whitespaces
-                initial_state_str = initial_state_str.substr(initial_state_str.find_first_not_of(' '));
-                initial_state_str = initial_state_str.substr(0, initial_state_str.find_last_not_of(' ') + 1);
-                initial_state = initial_state_str;
-                stage++;
+            // Lê estado inicial
+            case 3:{
+                std::string string_estado_inicial = linha;
+                int posColon = string_estado_inicial.find(":");
+                string_estado_inicial = string_estado_inicial.substr(posColon + 1);
+                // Corta espaços vazios
+                string_estado_inicial = string_estado_inicial.substr(string_estado_inicial.find_first_not_of(' '));
+                string_estado_inicial = string_estado_inicial.substr(0, string_estado_inicial.find_last_not_of(' ') + 1);
+                estado_inicial = string_estado_inicial;
+                etapa++;
                 break;
             }
-            case 4: {
-                // read finals
-                std::string finals_str = line;
-                int posColon = finals_str.find(":");
-                finals_str = finals_str.substr(posColon + 1);
-                while (finals_str.find(",") != std::string::npos) {
-                    int posComma = finals_str.find(",");
-                    std::string final_state = finals_str.substr(0, posComma);
-                    // trim whitespaces
-                    final_state = final_state.substr(final_state.find_first_not_of(' '));
-                    final_state = final_state.substr(0, final_state.find_last_not_of(' ') + 1);
-                    finals.push_back(final_state);
-                    finals_str = finals_str.substr(posComma + 1);
+            // Lê finais
+            case 4:{
+                std::string string_finais = linha;
+                int posDoisPontos = string_finais.find(":");
+                string_finais = string_finais.substr(posDoisPontos + 1);
+                while(string_finais.find(",") != std::string::npos){
+                    int posVirgula = string_finais.find(",");
+                    std::string estado_final = string_finais.substr(0, posVirgula);
+                    // Corta espaços vazios
+                    estado_final = estado_final.substr(estado_final.find_first_not_of(' '));
+                    estado_final = estado_final.substr(0, estado_final.find_last_not_of(' ') + 1);
+                    finais.push_back(estado_final);
+                    string_finais = string_finais.substr(posVirgula + 1);
                 }
-                // trim whitespaces
-                finals_str = finals_str.substr(finals_str.find_first_not_of(' '));
-                finals_str = finals_str.substr(0, finals_str.find_last_not_of(' ') + 1);
-                finals.push_back(finals_str);
-                stage++;
+                // Corta espaços vazios
+                string_finais = string_finais.substr(string_finais.find_first_not_of(' '));
+                string_finais = string_finais.substr(0, string_finais.find_last_not_of(' ') + 1);
+                finais.push_back(string_finais);
+                etapa++;
                 break;
             }
-            case 5: {
-                // Read transitions
-                std::string transition_str = line;
-                int posOpenParenthesis = transition_str.find("(");
-                int posCloseParenthesis = transition_str.find(")");
-                transition_str = transition_str.substr(posOpenParenthesis + 1,
-                                                       posCloseParenthesis - posOpenParenthesis - 1);
-                // Get state 1
-                std::string state1 = transition_str.substr(0, transition_str.find(","));
-                // trim whitespaces
-                state1 = state1.substr(state1.find_first_not_of(' '));
-                state1 = state1.substr(0, state1.find_last_not_of(' ') + 1);
-
-                transition_str = transition_str.substr(transition_str.find(",") + 1);
-                // Get symbol
-                char symbol = transition_str.substr(0, transition_str.find(",")).c_str()[0];
-
-                // Get state 2
-                std::string state2 = transition_str;
-                state2 = state2.substr(state2.find(",") + 1);
-                // trim whitespaces
-                state2 = state2.substr(state2.find_first_not_of(' '));
-                state2 = state2.substr(0, state2.find_last_not_of(' ') + 1);
-
-                // Add transition to list
-                transitions.push_back(std::make_tuple(state1, symbol, state2));
+            // Lê transições
+            case 5:{
+                std::string string_transicoes = linha;
+                int posAbreParenteses = string_transicoes.find("(");
+                int posFechaParenteses = string_transicoes.find(")");
+                string_transicoes = string_transicoes.substr(posAbreParenteses + 1,
+                                                             posFechaParenteses - posAbreParenteses - 1);
+                // Pega estado de saída da transição
+                std::string estado1 = string_transicoes.substr(0, string_transicoes.find(","));
+                // Corta espaços vazios
+                estado1 = estado1.substr(estado1.find_first_not_of(' '));
+                estado1 = estado1.substr(0, estado1.find_last_not_of(' ') + 1);
+                string_transicoes = string_transicoes.substr(string_transicoes.find(",") + 1);
+                // Pega símbolo
+                char simbolo = string_transicoes.substr(0, string_transicoes.find(",")).c_str()[0];
+                // Pega estado de chegada da transição
+                std::string estado2 = string_transicoes;
+                estado2 = estado2.substr(estado2.find(",") + 1);
+                // Corta espaços vazios
+                estado2 = estado2.substr(estado2.find_first_not_of(' '));
+                estado2 = estado2.substr(0, estado2.find_last_not_of(' ') + 1);
+                // Adiciona transição na lista
+                transicoes.push_back(std::make_tuple(estado1, simbolo, estado2));
                 break;
             }
         }
     }
-    // create automata
+    // Cria autômato
 #ifdef DEBUG
-    // Print automata
-    printf("Name: %s \n", name.c_str());
-    printf("States: \n");
-    for (auto state: states) {
-        printf("\t'%s' \n", state.c_str());
+    // Imprime autômato
+    printf("Nome: %s \n", nome.c_str());
+    printf("Estados: \n");
+    for(auto estado: estados){
+        printf("\t'%s' \n", estado.c_str());
     }
-    printf("Alphabet: \n");
-    for (auto symbol: alphabet) {
-        printf("\t'%c' \n", symbol);
+    printf("Alfabeto: \n");
+    for(auto simbolo: alfabeto){
+        printf("\t'%c' \n", simbolo);
     }
-    printf("Initial state: '%s'\n", initial_state.c_str());
-    printf("Final states: \n");
-    for (auto final_state: finals) {
-        printf("\t'%s' \n", final_state.c_str());
+    printf("Estado inicial: '%s'\n", estado_inicial.c_str());
+    printf("Estados finais: \n");
+    for(auto estado_final: finais){
+        printf("\t'%s' \n", estado_final.c_str());
     }
-    printf("Transitions: \n");
-    for (auto transition: transitions) {
-        printf("\t'%s' --%c-> '%s' \n", std::get<0>(transition).c_str(), std::get<1>(transition),
-               std::get<2>(transition).c_str());
+    printf("Transicoes: \n");
+    for(auto transicao: transicoes){
+        printf("\t'%s' --%c-> '%s' \n", std::get<0>(transicao).c_str(), std::get<1>(transicao),
+               std::get<2>(transicao).c_str());
     }
     printf("\n");
 #else
-    printf("Automata %s created \n", name.c_str());
+    printf("Automato %s criado \n", nome.c_str());
 #endif
-    Automato automata(name, alphabet, states, finals, initial_state);
-    for (auto transition: transitions) {
-        automata.createTransition(std::get<0>(transition), std::get<2>(transition), std::get<1>(transition));
+    Automato automato(nome, alfabeto, estados, finais, estado_inicial);
+    for(auto transicao: transicoes){
+        automato.criaTransicao(std::get<0>(transicao), std::get<2>(transicao), std::get<1>(transicao));
     }
-    fclose(file);
-    // return automata
-    return automata;
+    fclose(arq);
+    // Retorna autômato
+    return automato;
 }
