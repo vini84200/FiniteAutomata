@@ -37,7 +37,7 @@ int main(){
                 if (automato.ehAceita(palavra)){
                     printf("A palavra %s e aceita pelo automato\n", palavra);
                 }else{
-                    printf("A palavra %s não e aceita pelo automato\n", palavra);
+                    printf("A palavra %s nao e aceita pelo automato\n", palavra);
                 }
                 break;
             }

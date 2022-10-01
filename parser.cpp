@@ -16,7 +16,7 @@ Automato Parser::parseArquivo(std::string nome_arquivo){
     // Abre arquivo para leitura
     auto arq = fopen(nome_arquivo.c_str(), "r");
     if(arq == nullptr){
-        std::cout << "Arquivo não encontrado" << std::endl;
+        std::cout << "Arquivo nao encontrado" << std::endl;
         exit(1);
     }
     // Processa o arquivo
