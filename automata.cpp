@@ -197,7 +197,8 @@ void Automato::simplify() {
     this->removeDeadStates();
     printf("Merging equivalent states\n");
     this->mergeEquivalentStates();
-
+    printf("Removing useless symbols\n");
+    this->removeSimbolosInuteis();
 }
 
 void Automato::removeUnreachableStates() {
@@ -310,4 +311,31 @@ void Automato::mergeEquivalentStates() {
             }
         }
     }
+}
+
+void Automato::removeSimbolosInuteis(){
+    std::vector<bool> ctrl(this->alphabet.size(), false);
+    for(unsigned int i = 0; i < this->alphabet.size(); i++){
+        for(auto &state_transitions: this->transitions){
+            for(auto &transition: state_transitions.second){
+                if((transition.first == alphabet[i]) && (transition.second != -1)){
+                    ctrl[i] = true;
+                    break;
+                }
+            }
+            if(ctrl[i] == true){
+                break;
+            }
+        }
+    }
+    std::vector<char> new_alphabet;
+    for(unsigned int i = 0; i < ctrl.size(); i++){
+        if(ctrl[i] == true){
+            new_alphabet.push_back(this->alphabet[i]);
+        }
+        else{
+            printf("Removing '%c'\n", this->alphabet[i]);
+        }
+    }
+    this->alphabet = new_alphabet;
 }

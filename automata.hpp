@@ -56,6 +56,8 @@ public:
     void removeDeadStates();
 
     void mergeEquivalentStates();
+
+    void removeSimbolosInuteis();
 };
 
 #endif
