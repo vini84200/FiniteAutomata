@@ -28,6 +28,10 @@ Parser::~Parser() {}
 Automato Parser::parseFile(std::string file_name) {
     // open file
     auto file = fopen(file_name.c_str(), "r");
+    if (file == nullptr) {
+        std::cout << "Arquivo não encontrado" << std::endl;
+        exit(1);
+    }
     // parse file content
     std::string name, initial_state;
     std::vector<std::string> states, finals;
