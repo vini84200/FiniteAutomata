@@ -4,7 +4,7 @@ HEADER	= automato.hpp parser.h
 OUT	= minimizar_automato
 CC	 = g++
 FLAGS	 = -g -c -Wall
-LFLAGS	 =
+LFLAGS	 = -std=c++11 -static -static-libgcc -static-libstdc++
 
 all: $(OBJS)
 	$(CC) -g $(OBJS) -o $(OUT) $(LFLAGS)
